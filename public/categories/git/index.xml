@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Git on Coooody&#39;s</title>
-    <link>http://blog.cody.wang/categories/git/</link>
+    <link>https://Cody2333.github.io/blog/categories/git/</link>
     <description>Recent content in Git on Coooody&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 18 Apr 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://blog.cody.wang/categories/git/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://Cody2333.github.io/blog/categories/git/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Git工作流的最佳实践</title>
-      <link>http://blog.cody.wang/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
+      <link>https://Cody2333.github.io/blog/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link>
       <pubDate>Tue, 18 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://blog.cody.wang/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
+      <guid>https://Cody2333.github.io/blog/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid>
       <description>简介 今天来总结一下在实际项目开发中使用Git工作流的最佳实践，项目使用gitlab作为版本控制。比较适合小型或者中型的多人合作，快速迭代开发</description>
     </item>
     

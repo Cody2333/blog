@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "http://blog.cody.wang/"
+baseurl = "https://Cody2333.github.io/blog/"
 languageCode = "en"
 title = "Coooody's"
 theme = "hugo-theme-cactus-plus"

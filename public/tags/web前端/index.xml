@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Web前端 on Coooody&#39;s</title>
-    <link>http://blog.cody.wang/tags/web%E5%89%8D%E7%AB%AF/</link>
+    <link>https://Cody2333.github.io/blog/tags/web%E5%89%8D%E7%AB%AF/</link>
     <description>Recent content in Web前端 on Coooody&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 18 Apr 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://blog.cody.wang/tags/web%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://Cody2333.github.io/blog/tags/web%E5%89%8D%E7%AB%AF/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>填坑-前端导出csv文件的方法</title>
-      <link>http://blog.cody.wang/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/</link>
+      <link>https://Cody2333.github.io/blog/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/</link>
       <pubDate>Tue, 18 Apr 2017 00:00:00 +0000</pubDate>
       
-      <guid>http://blog.cody.wang/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/</guid>
+      <guid>https://Cody2333.github.io/blog/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/</guid>
       <description>在前后端分离的情况下，通常前端浏览器提供用户文件下载的功能的实现方式如下： 前端请求后端api 后端根据前端的请求生成一个文件 后端返回一个下载的</description>
     </item>
     
