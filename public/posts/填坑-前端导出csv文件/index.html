@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody23333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="填坑-前端导出csv文件的方法"/>
+  <meta name="twitter:description" content="在前后端分离的情况下，通常前端浏览器提供用户文件下载的功能的实现方式如下： 前端请求后端api 后端根据前端的请求生成一个文件 后端返回一个下载的"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.36" />
+		<title>填坑-前端导出csv文件的方法 &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody23333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody23333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody23333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody23333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody23333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        填坑-前端导出csv文件的方法
+                    </h1>
+                    <h2 class="headline">
+                    Apr 18, 2017 00:00
+                    · 1447 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody23333.github.io/blog/tags/javascript">javascript</a>
+                          
+                              <a href="https://Cody23333.github.io/blog/tags/web%E5%89%8D%E7%AB%AF">web前端</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#是否应该在前端导出csv文件">是否应该在前端导出csv文件？</a></li>
+<li><a href="#demo">demo</a></li>
+<li><a href="#具体实现">具体实现</a>
+<ul>
+<li>
+<ul>
+<li><a href="#将表格数据转换为csv格式">将表格数据转换为csv格式</a></li>
+<li><a href="#如何生成文件">如何生成文件?</a></li>
+<li><a href="#如何下载文件">如何下载文件?</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#遇到的问题">遇到的问题</a>
+<ul>
+<li>
+<ul>
+<li><a href="#中文编码">中文编码</a>
+<ul>
+<li>
+<ul>
+<li><a href="#解决方法">解决方法</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#文本自动转数字">文本自动转数字</a>
+<ul>
+<li>
+<ul>
+<li><a href="#解决方法-1">解决方法</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>在前后端分离的情况下，通常前端浏览器提供用户文件下载的功能的实现方式如下：</p>
+
+<ol>
+<li>前端请求后端api</li>
+<li>后端根据前端的请求生成一个文件</li>
+<li>后端返回一个下载的url地址</li>
+<li>前端利用a标签的download属性，实现用户的点击下载。</li>
+</ol>
+
+<p>在jquery中的dataTable有非常方便的导出csv的功能，但是jquery对于现在的web来说太重了，我也不需要其中的大部分功能，所以我实现了一个简单的csv文件生成导出的模块，方便日常使用。</p>
+
+<h2 id="是否应该在前端导出csv文件">是否应该在前端导出csv文件？</h2>
+
+<p>对用用户需要简单的导出表格中数据的功能，通过前端实现，一方面可以减少一次api的请求，提升响应速度，另一方面，有时候客户可能确实需要这样一个在前端导出csv文件的功能，比如用户需要选中表格中某几行数据进行导出，显然在前端可以更便捷灵活的操作。</p>
+
+<h2 id="demo">demo</h2>
+
+<p>本文中，我将实现一个将表格数据转换为csv的格式，并生成一个指定文件名的csv文件，供用户下载的功能。</p>
+
+<p>我将该功能进行了封装发布到了npm上
+<a href="https://www.npmjs.com/package/csv-exportor">csv-exportor</a>
+demo实现基于前端框架vue2.0，但是事实上适用于任何前端框架。
+<a href="https://cody2333.github.io/csv-exportor/">示例demo</a>
+<a href="https://github.com/Cody2333/csv-exportor">源代码github地址</a></p>
+
+<h2 id="具体实现">具体实现</h2>
+
+<p>本身的实现其实不难，但是遇到了挺多的坑，所以总结一下。</p>
+
+<h4 id="将表格数据转换为csv格式">将表格数据转换为csv格式</h4>
+
+<p>这里为了方便起见，我使用了库comma-separated-values，无论性能还是使用都没什么问题。</p>
+
+<pre><code class="language-js">import CSV from 'comma-separated-values';
+// data为表格数据，options可配置表头等信息，返回编码后的csv
+const encoded = new CSV(data, options).encode();
+</code></pre>
+
+<h4 id="如何生成文件">如何生成文件?</h4>
+
+<p>前端如何生成二进制文件？
+- Blob
+使用Blob对象类型。实际上，File对象就是继承自Blob，所以在大多数地方，Blob和File是可以共用的。我们可以通过Blob来生成二进制流。</p>
+
+<ul>
+<li>URL
+现代浏览器提供了方法<code>URL.createObjectURL</code>用来创建data url</li>
+</ul>
+
+<p>所以我们可以使用Blob和URL来封装我们格式化的csv数据，得到dataUrl。</p>
+
+<h4 id="如何下载文件">如何下载文件?</h4>
+
+<p>为了实现点击一个按钮，下载导出csv文件的功能，我们可以利用a标签来完成。
+1. 动态创建一个隐藏的a标签
+2. href 属性 = 上一步生成的dataUrl
+3. download 属性 = 指定文件名
+4. 模拟点击a标签
+5. 释放URL对象
+6. 成功实现文件下载</p>
+
+<p>具体实现如下：</p>
+
+<pre><code class="language-js">import CSV from 'comma-separated-values';
+
+/**
+ * generate data url of the generated csv file
+ * @param {*} data 
+ * @param {*} options 
+ * @returns {String} dataUrl of generated csv file 
+ */
+function genUrl(data, options) {
+  const encoded = new CSV(data, options).encode();
+  const dataBlob = new Blob([`\ufeff${encoded}`], { type: 'text/plain;charset=utf-8' });
+  return window.URL.createObjectURL(dataBlob);
+}
+
+/**
+ * generate csv file from data, and automatically download the file for browser
+ * @param {*} data 
+ * @param {*} options 
+ * @param {*} fileName 
+ */
+function downloadCsv(data, options, fileName) {
+  const url = genUrl(data, options);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+export default {
+  genUrl,
+  downloadCsv,
+};
+
+</code></pre>
+
+<h2 id="遇到的问题">遇到的问题</h2>
+
+<p>在过程中遇到的问题，其实大部分和excel对csv的呈现有关，但是考虑到用户在导出csv之后都是用excel打开的，所以不得不好好填坑了。</p>
+
+<h4 id="中文编码">中文编码</h4>
+
+<p>最初在生成csv之后，使用文本编辑器都是可以正常显示的，使用的是UTF-8的编码，但是用excel打开csv文件就会乱码</p>
+
+<h6 id="解决方法">解决方法</h6>
+
+<p>excel不能识别无BOM的UTF-8编码，需要转为带BOM的UTF-8编码，就是在文件头加上<code>\ufeff</code>即可</p>
+
+<pre><code>  const dataBlob = new Blob([`\ufeff${encoded}`], { type: 'text/plain;charset=utf-8' });
+</code></pre>
+
+<h4 id="文本自动转数字">文本自动转数字</h4>
+
+<p>excel打开csv的时候会自动把内容是数字的文本转换为数字，这导致了手机号会被用科学计数法显示，以及一些0开头的数字会被自动删除前面的0。</p>
+
+<h6 id="解决方法-1">解决方法</h6>
+
+<p>现在暂时没有完美的解决方法，只能在csv的数字文本前加一个单引号，如<code>&quot;'0012&quot;,&quot;'0013&quot;</code>
+单引号表示的语义是【这个单元格是一个数字， 但是我想要用文本的方式来呈现】
+但是excel不会自动去掉这些单引号，需要在excel中进行一步额外的操作
+<code>全局替换文件中的单引号为单引号</code>
+即可。</p>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BD%BF%E7%94%A8swagger%E7%BB%B4%E6%8A%A4node%E7%9A%84%E5%90%8E%E7%AB%AF%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/">koa-swagger-decorator:基于注解根据API自动生成可视化swagger文档<aside class="dates">Feb 10 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E5%92%8C%E6%9C%89%E7%94%A8%E7%9A%84%E6%96%87%E7%AB%A0/">一些总结和有用的文章<aside class="dates">Feb 1 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3node-js%E4%B8%AD%E7%9A%84stream/">理解nodeJs中的stream<aside class="dates">Jan 22 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0------%E7%AE%80%E8%BF%B0/">对抗样本和对抗训练笔记<aside class="dates">Jan 18 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/">解决卸载360，腾讯管家等安全软件导致windows-defender服务无法启动问题<aside class="dates">Sep 18 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/">使用VSCode调试babel编译的nodeJs项目<aside class="dates">Aug 16 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8E%E3%81%AE%E5%BC%82%E4%B8%96%E7%95%8C-%E5%8A%A8%E7%94%BB%E8%84%9A%E6%9C%AC/">浏览器后の异世界-动画脚本<aside class="dates">May 21 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E7%BB%9F%E8%AE%A1%E7%9B%B8%E5%85%B3%E6%80%A7%E7%9A%84kappa%E7%B3%BB%E6%95%B0/">理解统计相关性的kappa系数<aside class="dates">Apr 28 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">Git工作流的最佳实践<aside class="dates">Apr 18 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%9F%BA%E4%BA%8Epromise%E5%92%8Casync-await%E7%9A%84%E5%BC%82%E6%AD%A5%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/">基于Promise和Async-Await的异步流程控制<aside class="dates">Apr 18 2017</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody23333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody23333.github.io/blog/js/main.js"></script>
+<script src="https://Cody23333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>

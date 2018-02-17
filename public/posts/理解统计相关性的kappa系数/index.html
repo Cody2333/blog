@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody23333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="理解统计相关性的kappa系数"/>
+  <meta name="twitter:description" content="最近尝试对眼底图像进行多分类识别，使用的数据集来自kaggle的Diabetic Retinopathy Detection 。根据眼底图像的好坏分为0，1，2，3，4五类，kagg"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.36" />
+		<title>理解统计相关性的kappa系数 &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody23333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody23333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody23333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody23333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody23333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody23333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        理解统计相关性的kappa系数
+                    </h1>
+                    <h2 class="headline">
+                    Apr 28, 2017 00:00
+                    · 779 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody23333.github.io/blog/tags/machine_learning">machine_learning</a>
+                          
+                              <a href="https://Cody23333.github.io/blog/tags/kappa">kappa</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#linear-or-quadratic-weighted-kappa">linear or quadratic weighted kappa？</a></li>
+<li><a href="#计算方法">计算方法</a></li>
+</ul></li>
+</ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    
+
+<p>最近尝试对眼底图像进行多分类识别，使用的数据集来自kaggle的<a href="https://www.kaggle.com/c/diabetic-retinopathy-detection">Diabetic Retinopathy Detection </a>。根据眼底图像的好坏分为0，1，2，3，4五类，kaggle的评分基于quadratic weighted kappa，将我们预测的labels与医生手动标注的labels进行通过quadratic weighted kappa进行比较。以前没接触过，在这里简单写一下我对kappa系数的一些理解，如有错误欢迎指出。</p>
+
+<h2 id="简介">简介</h2>
+
+<p>Kappa系数是一种比例，代表着分类与完全随机的分类产生错误减少的比例。1960年Cohen等提出用Kappa值作为评价判断的一致性程度的指标，实践证明，它是一个描述诊断的一致性的较为理想的指标，因此在临床试验中得到广泛的应用。
+kappa=1 两次判断完全一致
+kappa&gt;=0.75 比较满意的一致程度
+kappa&lt;0.4 不够理想的一致程度</p>
+
+<p>根据kappa的计算方法分为简单kappa（simple kappa）和加权kappa（weighted kappa），加权kappa又分为<strong>linear weighted kappa</strong>和<strong>quadratic weighted kappa。</strong></p>
+
+<h2 id="linear-or-quadratic-weighted-kappa">linear or quadratic weighted kappa？</h2>
+
+<p>关于linear还是quadratic weighted kappa的选择，取决于你的数据集中不同class之间差异的意义。比如对于眼底图像识别的数据，class=0为健康，class=4为疾病晚期非常严重，所以对于把class=0预测成4的行为所造成的惩罚应该远远大于把class=0预测成class=1的行为，使用quadratic的话0-&gt;4所造成的惩罚就等于16倍的0-&gt;1的惩罚。如下图是一个四分类的两个计算方法的比较。
+<img src="https://pic3.zhimg.com/v2-871bd9f471d8520cb2c3b68a44555eae_b.png" alt="" /></p>
+
+<h2 id="计算方法">计算方法</h2>
+
+<p><a href="https://www.kaggle.com/c/diabetic-retinopathy-detection/details/evaluation">Diabetic Retinopathy Detection</a>这里给出了具体计算原理，在python中的实现可参考：
+<a href="https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/quadratic_weighted_kappa.py">https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/quadratic_weighted_kappa.py</a></p>
+
+<pre><code>def quadratic_weighted_kappa(rater_a, rater_b, min_rating=None, max_rating=None):
+
+    rater_a = np.array(rater_a, dtype=int)
+    rater_b = np.array(rater_b, dtype=int)
+    assert(len(rater_a) == len(rater_b))
+    if min_rating is None:
+        min_rating = min(min(rater_a), min(rater_b))
+    if max_rating is None:
+        max_rating = max(max(rater_a), max(rater_b))
+    conf_mat = confusion_matrix(rater_a, rater_b,
+                                min_rating, max_rating)
+    num_ratings = len(conf_mat)
+    num_scored_items = float(len(rater_a))
+
+    hist_rater_a = histogram(rater_a, min_rating, max_rating)
+    hist_rater_b = histogram(rater_b, min_rating, max_rating)
+
+    numerator = 0.0
+    denominator = 0.0
+
+    for i in range(num_ratings):
+        for j in range(num_ratings):
+            expected_count = (hist_rater_a[i] * hist_rater_b[j]
+                              / num_scored_items)
+            d = pow(i - j, 2.0) / pow(num_ratings - 1, 2.0)
+            numerator += d * conf_mat[i][j] / num_scored_items
+            denominator += d * expected_count / num_scored_items
+
+
+    return 1.0 - numerator / denominator
+</code></pre>
+
+                </section>
+            </article>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BD%BF%E7%94%A8swagger%E7%BB%B4%E6%8A%A4node%E7%9A%84%E5%90%8E%E7%AB%AF%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/">koa-swagger-decorator:基于注解根据API自动生成可视化swagger文档<aside class="dates">Feb 10 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E5%92%8C%E6%9C%89%E7%94%A8%E7%9A%84%E6%96%87%E7%AB%A0/">一些总结和有用的文章<aside class="dates">Feb 1 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3node-js%E4%B8%AD%E7%9A%84stream/">理解nodeJs中的stream<aside class="dates">Jan 22 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0------%E7%AE%80%E8%BF%B0/">对抗样本和对抗训练笔记<aside class="dates">Jan 18 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/">解决卸载360，腾讯管家等安全软件导致windows-defender服务无法启动问题<aside class="dates">Sep 18 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/">使用VSCode调试babel编译的nodeJs项目<aside class="dates">Aug 16 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8E%E3%81%AE%E5%BC%82%E4%B8%96%E7%95%8C-%E5%8A%A8%E7%94%BB%E8%84%9A%E6%9C%AC/">浏览器后の异世界-动画脚本<aside class="dates">May 21 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">Git工作流的最佳实践<aside class="dates">Apr 18 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%9F%BA%E4%BA%8Epromise%E5%92%8Casync-await%E7%9A%84%E5%BC%82%E6%AD%A5%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/">基于Promise和Async-Await的异步流程控制<aside class="dates">Apr 18 2017</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/">填坑-前端导出csv文件的方法<aside class="dates">Apr 18 2017</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody23333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody23333.github.io/blog/js/main.js"></script>
+<script src="https://Cody23333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+    </body>
+</html>
