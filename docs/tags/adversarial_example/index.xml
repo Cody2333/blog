@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>adversarial_example on Coooody&#39;s</title>
-    <link>https://Cody2333.github.io/blog/tags/adversarial_example/</link>
+    <link>https://Cody2333.github.io/blog/docs/tags/adversarial_example/</link>
     <description>Recent content in adversarial_example on Coooody&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Thu, 18 Jan 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://Cody2333.github.io/blog/tags/adversarial_example/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://Cody2333.github.io/blog/docs/tags/adversarial_example/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>对抗样本和对抗训练笔记</title>
-      <link>https://Cody2333.github.io/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0-%E7%AE%80%E8%BF%B0/</link>
+      <link>https://Cody2333.github.io/blog/docs/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0-%E7%AE%80%E8%BF%B0/</link>
       <pubDate>Thu, 18 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://Cody2333.github.io/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0-%E7%AE%80%E8%BF%B0/</guid>
+      <guid>https://Cody2333.github.io/blog/docs/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0-%E7%AE%80%E8%BF%B0/</guid>
       <description>最近主要在看对抗样本，对抗训练相关的论文，在此写一下个人的一些理解，有些想法不是很成熟，欢迎交流。 什么是对抗样本 简单的说，就是会使得机器学习</description>
     </item>
     

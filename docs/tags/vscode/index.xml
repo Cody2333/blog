@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>vscode on Coooody&#39;s</title>
-    <link>https://Cody2333.github.io/blog/tags/vscode/</link>
+    <link>https://Cody2333.github.io/blog/docs/tags/vscode/</link>
     <description>Recent content in vscode on Coooody&#39;s</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 16 Aug 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://Cody2333.github.io/blog/tags/vscode/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://Cody2333.github.io/blog/docs/tags/vscode/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>使用VSCode调试babel编译的nodeJs项目</title>
-      <link>https://Cody2333.github.io/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/</link>
+      <link>https://Cody2333.github.io/blog/docs/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/</link>
       <pubDate>Wed, 16 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://Cody2333.github.io/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/</guid>
+      <guid>https://Cody2333.github.io/blog/docs/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/</guid>
       <description>一般情况下，我们会在node项目中使用babel，以便充分的使用最新的JS语法规范，以及提前使用还在草案阶段的语法。但是当我们使用babel</description>
     </item>
     
