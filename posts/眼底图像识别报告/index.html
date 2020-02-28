@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody2333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="眼底图像识别报告"/>
+  <meta name="twitter:description" content="简介 本次实验的目的是对眼底图像进行分类识别，数据的标签分为【0，1，2，3，4】五类，分别代表糖尿病视网膜病变的5个阶段，0为健康，4为最严"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.65.3" />
+		<title>眼底图像识别报告 &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody2333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody2333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody2333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody2333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        眼底图像识别报告
+                    </h1>
+                    <h2 class="headline">
+                    Mar 23, 2017 00:00
+                    · 1184 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/machine_learning">machine_learning</a>
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/diabetic_retinopathy_detection">diabetic_retinopathy_detection</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#原始数据集">原始数据集</a></li>
+    <li><a href="#图像预处理">图像预处理</a></li>
+    <li><a href="#网络结构">网络结构</a></li>
+    <li><a href="#特征提取">特征提取</a></li>
+    <li><a href="#左右眼混合">左右眼混合</a></li>
+  </ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="简介">简介</h2>
+<p>本次实验的目的是对眼底图像进行分类识别，数据的标签分为【0，1，2，3，4】五类，分别代表糖尿病视网膜病变的5个阶段，0为健康，4为最严重。</p>
+<p>我们的任务就是利用深度学习根据训练集训练模型，对测试集的数据进行预测分类，达到尽可能高的准确率。</p>
+<h2 id="原始数据集">原始数据集</h2>
+<ul>
+<li>train set
+包括 35126 张眼底图像的数据，分辨率不一，质量不一。
+划分出其中的10%作为validation set。</li>
+<li>test set
+包括 53576 张眼底图像的数据，但是kaggle并未给出label，kaggle根据对这个测试集结果的评判来给出比赛的得分。</li>
+</ul>
+<h2 id="图像预处理">图像预处理</h2>
+<ul>
+<li>resize
+以图像中的圆形眼底图片为边界进行裁剪，取中心部分。
+调整分辨率分别为128x128,256x256,512x512，用于之后的训练。</li>
+<li>Data augmentation
+通过360度旋转，镜像等扩增数据集。</li>
+</ul>
+<h2 id="网络结构">网络结构</h2>
+<p><img src="http://upload-images.jianshu.io/upload_images/2563527-25d873cea05d5baa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<ul>
+<li>
+<p>为了减少训练时间，只选用了一个网络net B进行训练</p>
+</li>
+<li>
+<p>使用10%的train set作为validation set</p>
+</li>
+<li>
+<p>用128x128像素图片训练1-11 和  20-25层。</p>
+</li>
+<li>
+<p>用256x256像素图片训练1-15 和  20-25层。初始时，使用上一次训练得到的权重作为1-11层的权重。</p>
+</li>
+<li>
+<p>用512x512像素图片训练全部层。初始时，使用上一次训练得到的权重作为1-15层的权重。</p>
+</li>
+<li>
+<p>最后得到三组权重（weights）
+<code>[best kappa weight, best validation score weight, final weight]</code></p>
+</li>
+</ul>
+<h2 id="特征提取">特征提取</h2>
+<p>从 RMSPooling Layer提取特征。为了提升质量，重复进行20次特征提取，但是使用的是随机的data argumentation。然后在20次循环之后提取出 RMSPooling Layer的平均值和标准差，作为下一层blend network的输入。</p>
+<h2 id="左右眼混合">左右眼混合</h2>
+<p>对于每个病人，使用下面的特征作为网络的输入
+<code>[this_eye_mean, other_eye_mean, this_eye_std, other_eye_std, right_eye_indicator]</code>
+训练一个简单的全连接神经网络。</p>
+<p>网络结构：</p>
+<pre><code>Input        8193
+Dense          32
+Maxout         16
+Dense          32
+Maxout         16
+```
+
+根据上文训练的三组weights，会生成三个blend network。然后对这三个network的输出取平均值，并且设置阈值为[0.5，1.5，2.5，3.5]来生成最终的分类结果。
+
+## 评分标准
+
+kaggle对此比赛的评分基于 quadratic weighted kappa 算法。得分范围为0-1，分数越高证明模型的效果越好。
+
+简单地说就是对于多分类问题，预测的越不准得分越低，比如把class=0预测成class=4的惩罚会比把class=0预测成class=1的惩罚重很多，进行随机预测的得分约为0。
+
+具体的算法实现内容参见[此链接](https://www.kaggle.com/c/diabetic-retinopathy-detection/details/evaluation)
+
+## 实验结果
+
+提交到kaggle进行评分，结果为8.42，略低于原队伍的8.44，但是考虑到我们所大幅度简化的网络，实际得到的结果还是不错的。
+
+validation set的confusion matrix如下：
+![confusion matrix](http://upload-images.jianshu.io/upload_images/2563527-e190e0077b75e00d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+可以看到，对于糖尿病视网膜病变的识别率能达到约92%左右，误报率为8%左右。
+
+整个训练耗时约30+小时，使用一块GTX1080显卡。
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2f%25E7%259C%25BC%25E5%25BA%2595%25E5%259B%25BE%25E5%2583%258F%25E8%25AF%2586%25E5%2588%25AB%25E6%258A%25A5%25E5%2591%258A%2f - %e7%9c%bc%e5%ba%95%e5%9b%be%e5%83%8f%e8%af%86%e5%88%ab%e6%8a%a5%e5%91%8a by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>true</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1ddd/">理解领域驱动设计（DDD）<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody2333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody2333.github.io/blog/js/main.js"></script>
+<script src="https://Cody2333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody2333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="理解统计相关性的kappa系数"/>
+  <meta name="twitter:description" content="最近尝试对眼底图像进行多分类识别，使用的数据集来自kaggle的Diabetic Retinopathy Detection 。根据眼底图像的好坏分为0，1，2，3，4五类，kagg"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.65.3" />
+		<title>理解统计相关性的kappa系数 &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody2333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody2333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody2333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody2333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        理解统计相关性的kappa系数
+                    </h1>
+                    <h2 class="headline">
+                    Apr 28, 2017 00:00
+                    · 795 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/machine_learning">machine_learning</a>
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/kappa">kappa</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#linear-or-quadratic-weighted-kappa">linear or quadratic weighted kappa？</a></li>
+    <li><a href="#计算方法">计算方法</a></li>
+  </ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <p>最近尝试对眼底图像进行多分类识别，使用的数据集来自kaggle的<a href="https://www.kaggle.com/c/diabetic-retinopathy-detection">Diabetic Retinopathy Detection </a>。根据眼底图像的好坏分为0，1，2，3，4五类，kaggle的评分基于quadratic weighted kappa，将我们预测的labels与医生手动标注的labels进行通过quadratic weighted kappa进行比较。以前没接触过，在这里简单写一下我对kappa系数的一些理解，如有错误欢迎指出。</p>
+<h2 id="简介">简介</h2>
+<p>Kappa系数是一种比例，代表着分类与完全随机的分类产生错误减少的比例。1960年Cohen等提出用Kappa值作为评价判断的一致性程度的指标，实践证明，它是一个描述诊断的一致性的较为理想的指标，因此在临床试验中得到广泛的应用。
+kappa=1 两次判断完全一致
+kappa&gt;=0.75 比较满意的一致程度
+kappa&lt;0.4 不够理想的一致程度</p>
+<p>根据kappa的计算方法分为简单kappa（simple kappa）和加权kappa（weighted kappa），加权kappa又分为<strong>linear weighted kappa</strong>和<strong>quadratic weighted kappa。</strong></p>
+<h2 id="linear-or-quadratic-weighted-kappa">linear or quadratic weighted kappa？</h2>
+<p>关于linear还是quadratic weighted kappa的选择，取决于你的数据集中不同class之间差异的意义。比如对于眼底图像识别的数据，class=0为健康，class=4为疾病晚期非常严重，所以对于把class=0预测成4的行为所造成的惩罚应该远远大于把class=0预测成class=1的行为，使用quadratic的话0-&gt;4所造成的惩罚就等于16倍的0-&gt;1的惩罚。如下图是一个四分类的两个计算方法的比较。
+<img src="https://pic3.zhimg.com/v2-871bd9f471d8520cb2c3b68a44555eae_b.png" alt=""></p>
+<h2 id="计算方法">计算方法</h2>
+<p><a href="https://www.kaggle.com/c/diabetic-retinopathy-detection/details/evaluation">Diabetic Retinopathy Detection</a>这里给出了具体计算原理，在python中的实现可参考：
+<a href="https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/quadratic_weighted_kappa.py">https://github.com/benhamner/Metrics/blob/master/Python/ml_metrics/quadratic_weighted_kappa.py</a></p>
+<pre><code>def quadratic_weighted_kappa(rater_a, rater_b, min_rating=None, max_rating=None):
+
+    rater_a = np.array(rater_a, dtype=int)
+    rater_b = np.array(rater_b, dtype=int)
+    assert(len(rater_a) == len(rater_b))
+    if min_rating is None:
+        min_rating = min(min(rater_a), min(rater_b))
+    if max_rating is None:
+        max_rating = max(max(rater_a), max(rater_b))
+    conf_mat = confusion_matrix(rater_a, rater_b,
+                                min_rating, max_rating)
+    num_ratings = len(conf_mat)
+    num_scored_items = float(len(rater_a))
+
+    hist_rater_a = histogram(rater_a, min_rating, max_rating)
+    hist_rater_b = histogram(rater_b, min_rating, max_rating)
+
+    numerator = 0.0
+    denominator = 0.0
+
+    for i in range(num_ratings):
+        for j in range(num_ratings):
+            expected_count = (hist_rater_a[i] * hist_rater_b[j]
+                              / num_scored_items)
+            d = pow(i - j, 2.0) / pow(num_ratings - 1, 2.0)
+            numerator += d * conf_mat[i][j] / num_scored_items
+            denominator += d * expected_count / num_scored_items
+
+
+    return 1.0 - numerator / denominator
+</code></pre>
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2f%25E7%2590%2586%25E8%25A7%25A3%25E7%25BB%259F%25E8%25AE%25A1%25E7%259B%25B8%25E5%2585%25B3%25E6%2580%25A7%25E7%259A%2584kappa%25E7%25B3%25BB%25E6%2595%25B0%2f - %e7%90%86%e8%a7%a3%e7%bb%9f%e8%ae%a1%e7%9b%b8%e5%85%b3%e6%80%a7%e7%9a%84kappa%e7%b3%bb%e6%95%b0 by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>true</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1ddd/">理解领域驱动设计（DDD）<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody2333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody2333.github.io/blog/js/main.js"></script>
+<script src="https://Cody2333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

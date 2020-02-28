@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>学习 on Coooody&#39;s</title>
+    <link>https://Cody2333.github.io/blog/tags/%E5%AD%A6%E4%B9%A0/</link>
+    <description>Recent content in 学习 on Coooody&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://Cody2333.github.io/blog/tags/%E5%AD%A6%E4%B9%A0/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2018“华为杯”全国研究生数学建模比赛-参赛小结</title>
+      <link>https://Cody2333.github.io/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/</link>
+      <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://Cody2333.github.io/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/</guid>
+      <description>简介 信息安全专业，主要方向是机器学习，有 python 经验，之前并没有接触过数学建模相关的比赛， 暑假的时候正好有同学在找人组队想参加数模的比赛，一开始大</description>
+    </item>
+    
+    <item>
+      <title>2018-上海交大hackthon-HACKxSJTU-参赛小记</title>
+      <link>https://Cody2333.github.io/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://Cody2333.github.io/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/</guid>
+      <description>简介 项目地址：https://github.com/HackxSJTUGroupB21 项目介绍：https://www.hackx.org/</description>
+    </item>
+    
+  </channel>
+</rss>

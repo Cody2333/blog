@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>逛街 on Coooody&#39;s</title>
+    <link>https://Cody2333.github.io/blog/tags/%E9%80%9B%E8%A1%97/</link>
+    <description>Recent content in 逛街 on Coooody&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 12 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://Cody2333.github.io/blog/tags/%E9%80%9B%E8%A1%97/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2019 Google 开发者大会(GDD)见闻</title>
+      <link>https://Cody2333.github.io/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/</link>
+      <pubDate>Thu, 12 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://Cody2333.github.io/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/</guid>
+      <description>2019 Google 开发者大会(GDD)见闻 开篇 大清早起床从学校赶到世博中心，到的人已经很多了。第一次来 GDD，本次活动的主要目标大概就是收集一波Googl</description>
+    </item>
+    
+  </channel>
+</rss>
