@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hackthon on Coooody&#39;s</title>
+    <link>https://Cody2333.github.io/blog/tags/hackthon/</link>
+    <description>Recent content in hackthon on Coooody&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 12 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://Cody2333.github.io/blog/tags/hackthon/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2018-上海交大hackthon-HACKxSJTU-参赛小记</title>
+      <link>https://Cody2333.github.io/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://Cody2333.github.io/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/</guid>
+      <description>简介 项目地址：https://github.com/HackxSJTUGroupB21 项目介绍：https://www.hackx.org/</description>
+    </item>
+    
+  </channel>
+</rss>

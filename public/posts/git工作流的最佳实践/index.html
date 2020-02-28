@@ -29,7 +29,7 @@
 		
 		<meta name="author" content="coooody">
 		<meta name="description" content="科科">
-		<meta name="generator" content="Hugo 0.36" />
+		<meta name="generator" content="Hugo 0.65.3" />
 		<title>Git工作流的最佳实践 &middot; Coooody&#39;s</title>
 		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
 		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
@@ -68,7 +68,7 @@
                     </h1>
                     <h2 class="headline">
                     Apr 18, 2017 00:00
-                    · 1433 words
+                    · 1437 words
                     · 3 minute read
                       <span class="tags">
                       
@@ -85,63 +85,44 @@
                   
                     <div id="toc">
                       <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#简介">简介</a></li>
-<li><a href="#分支">分支</a></li>
-<li><a href="#开发流程">开发流程</a></li>
-<li><a href="#部署">部署</a></li>
-<li><a href="#rebase-or-merge">rebase or merge？</a></li>
-<li><a href="#总结">总结</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#分支">分支</a></li>
+    <li><a href="#开发流程">开发流程</a></li>
+    <li><a href="#部署">部署</a></li>
+    <li><a href="#rebase-or-merge">rebase or merge？</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
 </nav>
                     </div>
                   
                 
                 <section id="post-body">
-                    
-
-<h2 id="简介">简介</h2>
-
+                    <h2 id="简介">简介</h2>
 <p>今天来总结一下在实际项目开发中使用Git工作流的最佳实践，项目使用gitlab作为版本控制。比较适合小型或者中型的多人合作，快速迭代开发的项目。</p>
-
 <h2 id="分支">分支</h2>
-
 <p>首先来介绍一下分支的设计。一般分为这么几类分支:</p>
-
 <ul>
 <li>master</li>
 <li>develop</li>
 <li>feature分支</li>
 <li>bug分支</li>
 </ul>
-
 <p>master为主分支，为protected分支，只允许其他分支的merge，不允许直接push代码。
 develop为开发的主分支，feature和bug分支提交merge request到develop。</p>
-
 <p>在开发中，针对每个功能开一个feature分支进行开发，命名可以为 [feature/xxx]，开发完成后提交merge request，合并到develop分支。</p>
-
 <p>针对开发中遇到的bug，新开一个bug分支，修复后，也提交merge request到develop分支。</p>
-
 <h2 id="开发流程">开发流程</h2>
-
 <p>注意点：</p>
-
 <ul>
 <li>规范的commit message格式</li>
 <li>拉取develop分支代码的时候使用rebase而不是merge</li>
 <li>使用rebase整理个人feature分支的commit</li>
 <li>开merge request进行code review</li>
 </ul>
-
 <p>首先应该制定一个commit的message的规范和格式，要求每次提交的commit message清晰。具体的格式可以根据团队的习惯制定，只需要能表述清晰即可。</p>
-
 <p>对于个人的feature分支，在准备提交MR合并进develop之前，应该用git rebase来整理自己的commit，使得逻辑清楚。同时可以避免产生[merge branch develop ***]这样的commit。</p>
-
 <p>具体操作如下：</p>
-
 <pre><code>// 在feature/xxx分支上进行开发，并进行了一些提交，此时要合并到develop分支
 
 // 首先用rebase的方式拉取develop分支代码
@@ -162,24 +143,27 @@ git push --force
 // 最后在gitlab上开一个merge request到develop分支
 
 // 团队其他成员review这个MR，并提出修改意见，然后根据修改意见，优化原来的代码，把存在问题的地方改掉，知道最后没有问题，将feature/xxx分支合并到develop
-</code></pre>
-
-<h2 id="部署">部署</h2>
-
+</code></pre><h2 id="部署">部署</h2>
 <p>master分支永远是稳定的版本，在master分支上，可以使用CI工具进行持续集成和自动部署。develop分支每次完成部分功能就可以merge到master，使得项目可以快速高效的迭代开发。</p>
-
 <h2 id="rebase-or-merge">rebase or merge？</h2>
-
 <p>在个人分支上，推荐只使用rebase而不是merge，因为rebase可以让你的提交看起来意义明确，并且没有无意义的merge其他分支的commit。</p>
-
 <p>而在主分支上， 只允许merge操作，从而保证主分支的commit历史的完整性。在多人开发的主分支上进行rebase操作是一件很危险的行为，可能会导致其他成员的history与主分支不一致。</p>
-
 <h2 id="总结">总结</h2>
-
 <p>个人认为，现在这样的git工作流可以很好的适应小团队的项目快速迭代开发，使得项目网络清晰明了。但是当项目变得复杂的时候，可能需要更复杂的控制，这部分没有什么实践的经验就不谈了。如果有不严谨的地方请指出。</p>
 
                 </section>
             </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2fgit%25E5%25B7%25A5%25E4%25BD%259C%25E6%25B5%2581%25E7%259A%2584%25E6%259C%2580%25E4%25BD%25B3%25E5%25AE%259E%25E8%25B7%25B5%2f - Git%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5 by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
             
 
@@ -187,49 +171,49 @@ git push --force
 
             
                 <ul id="post-list" class="archive readmore">
-    <h3>Read more</h3>
+    <h3>true</h3>
 
     
     
     
         <li>
-            <a href="/blog/posts/%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BD%BF%E7%94%A8swagger%E7%BB%B4%E6%8A%A4node%E7%9A%84%E5%90%8E%E7%AB%AF%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/">koa-swagger-decorator:基于注解根据API自动生成可视化swagger文档<aside class="dates">Feb 10 2018</aside></a>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E5%92%8C%E6%9C%89%E7%94%A8%E7%9A%84%E6%96%87%E7%AB%A0/">一些总结和有用的文章<aside class="dates">Feb 1 2018</aside></a>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E7%90%86%E8%A7%A3node-js%E4%B8%AD%E7%9A%84stream/">理解nodeJs中的stream<aside class="dates">Jan 22 2018</aside></a>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0------%E7%AE%80%E8%BF%B0/">对抗样本和对抗训练笔记<aside class="dates">Jan 18 2018</aside></a>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/">解决卸载360，腾讯管家等安全软件导致windows-defender服务无法启动问题<aside class="dates">Sep 18 2017</aside></a>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/">使用VSCode调试babel编译的nodeJs项目<aside class="dates">Aug 16 2017</aside></a>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1ddd/">理解领域驱动设计（DDD）<aside class="dates">Aug 3 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8E%E3%81%AE%E5%BC%82%E4%B8%96%E7%95%8C-%E5%8A%A8%E7%94%BB%E8%84%9A%E6%9C%AC/">浏览器后の异世界-动画脚本<aside class="dates">May 21 2017</aside></a>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E7%BB%9F%E8%AE%A1%E7%9B%B8%E5%85%B3%E6%80%A7%E7%9A%84kappa%E7%B3%BB%E6%95%B0/">理解统计相关性的kappa系数<aside class="dates">Apr 28 2017</aside></a>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%9F%BA%E4%BA%8Epromise%E5%92%8Casync-await%E7%9A%84%E5%BC%82%E6%AD%A5%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/">基于Promise和Async-Await的异步流程控制<aside class="dates">Apr 18 2017</aside></a>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/">填坑-前端导出csv文件的方法<aside class="dates">Apr 18 2017</aside></a>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
         </li>
     
 </ul>
@@ -250,6 +234,10 @@ git push --force
         <i class="fa fa-github-square"></i>
     </a>
     
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
 
 
 </div>
@@ -257,7 +245,7 @@ git push --force
     
     <p class="small">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
     
     </p>
     <p class="small">
@@ -276,6 +264,17 @@ git push --force
 
 
 
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
 
     </body>

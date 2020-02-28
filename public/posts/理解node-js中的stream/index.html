@@ -29,7 +29,7 @@
 		
 		<meta name="author" content="coooody">
 		<meta name="description" content="科科">
-		<meta name="generator" content="Hugo 0.36" />
+		<meta name="generator" content="Hugo 0.65.3" />
 		<title>理解nodeJs中的stream &middot; Coooody&#39;s</title>
 		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
 		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
@@ -68,7 +68,7 @@
                     </h1>
                     <h2 class="headline">
                     Jan 22, 2018 00:00
-                    · 1423 words
+                    · 1420 words
                     · 3 minute read
                       <span class="tags">
                       
@@ -87,81 +87,49 @@
                   
                     <div id="toc">
                       <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#简介">简介</a></li>
-<li><a href="#stream的种类">stream的种类</a></li>
-<li><a href="#stream解决的问题">stream解决的问题</a></li>
-<li><a href="#缓存机制">缓存机制</a></li>
-<li><a href="#writable-streams">Writable Streams</a>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#几个典型的可写流">几个典型的可写流：</a></li>
-<li><a href="#触发的事件">触发的事件：</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li><a href="#readable-streams">Readable Streams</a>
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#几个典型的可读流">几个典型的可读流：</a></li>
-<li><a href="#两种模式-flowing-and-paused">两种模式: flowing and paused</a></li>
-<li><a href="#触发的事件-1">触发的事件：</a></li>
-<li><a href="#readable-setencoding-encoding">readable.setEncoding(encoding)</a></li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li><a href="#http通信中的应用">HTTP通信中的应用</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#stream的种类">stream的种类</a></li>
+    <li><a href="#stream解决的问题">stream解决的问题</a></li>
+    <li><a href="#缓存机制">缓存机制</a></li>
+    <li><a href="#writable-streams">Writable Streams</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#readable-streams">Readable Streams</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#http通信中的应用">HTTP通信中的应用</a></li>
+  </ul>
 </nav>
                     </div>
                   
                 
                 <section id="post-body">
-                    
-
-<h2 id="简介">简介</h2>
-
+                    <h2 id="简介">简介</h2>
 <p>主要对stream这个概念做一个形象的描述和理解，同时介绍一下比较常用的API。主要参考了Node.js的官方文档。</p>
-
 <h2 id="stream的种类">stream的种类</h2>
-
 <ul>
 <li><a href="https://nodejs.org/api/stream.html#stream_class_stream_readable">Readable</a> - streams from which data can be read (for example <a href="https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options"><code>fs.createReadStream()</code></a>).</li>
 <li><a href="https://nodejs.org/api/stream.html#stream_class_stream_writable">Writable</a> - streams to which data can be written (for example <a href="https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options"><code>fs.createWriteStream()</code></a>).</li>
 <li><a href="https://nodejs.org/api/stream.html#stream_class_stream_duplex">Duplex</a> - streams that are both Readable and Writable (for example <a href="https://nodejs.org/api/net.html#net_class_net_socket"><code>net.Socket</code></a>).</li>
 <li><a href="https://nodejs.org/api/stream.html#stream_class_stream_transform">Transform</a> - Duplex streams that can modify or transform the data as it is written and read (for example <a href="https://nodejs.org/api/zlib.html#zlib_zlib_createdeflate_options"><code>zlib.createDeflate()</code></a>).</li>
 </ul>
-
 <h2 id="stream解决的问题">stream解决的问题</h2>
-
 <p>设计 stream API 的一个关键目标是将数据缓冲限制到可接受的级别，从而使得不同传输速率的源可以进行数据的传输，同时不会占用过量的内存。比如，文件的读取。系统从硬盘中读取文件的速度和我们程序处理文件内容的速度是不相匹配的，而且读取的文件可能是很大的。如果不用流来读取文件，那么我们首先就需要把整个文件读取到内存中，然后程序从内存中读取文件内容来进行后续的业务处理。这会极大的消耗系统的内存，并且降低处理的效率（要先读取整个文件，再处理数据）。</p>
-
 <p>stream这个概念是很形象的，就像是水流，可以通过管道，从一处流向另一处。比如从文件输入，最终由程序接收，进行后续的处理。而 <a href="https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a>就是流中最关键的一个管道方法。</p>
-
 <pre><code>// 此处代码实现了从file.txt读取数据，然后压缩数据，然后写入file.txt.gz的过程
 const r = fs.createReadStream('file.txt');
 const z = zlib.createGzip();
 const w = fs.createWriteStream('file.txt.gz');
 r.pipe(z).pipe(w);
-</code></pre>
-
-<h2 id="缓存机制">缓存机制</h2>
-
+</code></pre><h2 id="缓存机制">缓存机制</h2>
 <p>Writeable 和 Readable stream 都将数据存储在一个自身内部的buffer中。分别<code>writable.writableBuffer</code> or <code>readable.readableBuffer</code> 可以得到buffer的数据。有一个参数<code>highWaterMark</code> 用来限制这个buffer的最大容量。从而使得流之间的数据传输可以被限制在一定的内存占用下，并且拥有较高的效率。</p>
-
 <h2 id="writable-streams">Writable Streams</h2>
-
 <h5 id="几个典型的可写流">几个典型的可写流：</h5>
-
 <ul>
 <li><a href="https://nodejs.org/api/http.html#http_class_http_clientrequest">HTTP requests, on the client</a></li>
 <li><a href="https://nodejs.org/api/http.html#http_class_http_serverresponse">HTTP responses, on the server</a></li>
@@ -172,16 +140,12 @@ r.pipe(z).pipe(w);
 <li><a href="https://nodejs.org/api/child_process.html#child_process_subprocess_stdin">child process stdin</a></li>
 <li><a href="https://nodejs.org/api/process.html#process_process_stdout"><code>process.stdout</code></a>, <a href="https://nodejs.org/api/process.html#process_process_stderr"><code>process.stderr</code></a></li>
 </ul>
-
 <pre><code>// 示例
 const myStream = getWritableStreamSomehow();
 myStream.write('some data');
 myStream.write('some more data');
 myStream.end('done writing data'); // 关闭流，不可再写入。
-</code></pre>
-
-<h5 id="触发的事件">触发的事件：</h5>
-
+</code></pre><h5 id="触发的事件">触发的事件：</h5>
 <ul>
 <li>close</li>
 <li><strong>drain</strong>
@@ -195,11 +159,8 @@ If a call to <a href="https://nodejs.org/api/stream.html#stream_writable_write_
 <li>unpipe
 对应于<code>readable.unpipe()</code>,有一个readable stream和该stream管道断开的时候触发</li>
 </ul>
-
 <h2 id="readable-streams">Readable Streams</h2>
-
 <h5 id="几个典型的可读流">几个典型的可读流：</h5>
-
 <ul>
 <li><a href="https://nodejs.org/api/http.html#http_class_http_incomingmessage">HTTP responses, on the client</a></li>
 <li><a href="https://nodejs.org/api/http.html#http_class_http_incomingmessage">HTTP requests, on the server</a></li>
@@ -210,25 +171,21 @@ If a call to <a href="https://nodejs.org/api/stream.html#stream_writable_write_
 <li><a href="https://nodejs.org/api/child_process.html#child_process_subprocess_stdout">child process stdout and stderr</a></li>
 <li><a href="https://nodejs.org/api/process.html#process_process_stdin"><code>process.stdin</code></a></li>
 </ul>
-
 <h5 id="两种模式-flowing-and-paused">两种模式: flowing and paused</h5>
-
-<p>readable stream 创建时都为paused模式，但是可以通过以下几个方法变为flowing：
-*   Adding a <a href="https://nodejs.org/api/stream.html#stream_event_data"><code>'data'</code></a> event handler.
-*   Calling the <a href="https://nodejs.org/api/stream.html#stream_readable_resume"><code>stream.resume()</code></a> method.
-*   Calling the <a href="https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a> method to send the data to a <a href="https://nodejs.org/api/stream.html#stream_class_stream_writable">Writable</a>.</p>
-
+<p>readable stream 创建时都为paused模式，但是可以通过以下几个方法变为flowing：</p>
+<ul>
+<li>Adding a <a href="https://nodejs.org/api/stream.html#stream_event_data"><code>'data'</code></a> event handler.</li>
+<li>Calling the <a href="https://nodejs.org/api/stream.html#stream_readable_resume"><code>stream.resume()</code></a> method.</li>
+<li>Calling the <a href="https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a> method to send the data to a <a href="https://nodejs.org/api/stream.html#stream_class_stream_writable">Writable</a>.</li>
+</ul>
 <p>最常用的其实就是stream.pipe()了。</p>
-
 <h5 id="触发的事件-1">触发的事件：</h5>
-
 <ul>
 <li>close</li>
 <li>data</li>
 <li>end</li>
 <li>readable</li>
 </ul>
-
 <pre><code>// 示例
 const readable = getReadableStreamSomehow();
 readable.on('data', (chunk) =&gt; {
@@ -237,24 +194,16 @@ readable.on('data', (chunk) =&gt; {
 readable.on('end', () =&gt; {
   console.log('There will be no more data.');
 });
-</code></pre>
-
-<h5 id="readable-setencoding-encoding">readable.setEncoding(encoding)</h5>
-
+</code></pre><h5 id="readablesetencodingencoding">readable.setEncoding(encoding)</h5>
 <p>调用readable.setEncoding(&lsquo;utf8&rsquo;)可以使得chunk的类型由buffer变为string。</p>
-
 <pre><code>const readable = getReadableStreamSomehow();
 readable.setEncoding('utf8');
 readable.on('data', (chunk) =&gt; {
   assert.equal(typeof chunk, 'string');
   console.log('got %d characters of string data', chunk.length);
 });
-</code></pre>
-
-<h2 id="http通信中的应用">HTTP通信中的应用</h2>
-
+</code></pre><h2 id="http通信中的应用">HTTP通信中的应用</h2>
 <p>看代码和注释应该就能懂了</p>
-
 <pre><code>const http = require('http');
 
 const server = http.createServer((req, res) =&gt; {
@@ -295,9 +244,19 @@ server.listen(1337);
 // $ curl localhost:1337 -d &quot;not json&quot;
 // error: Unexpected token o in JSON at position 1
 </code></pre>
-
                 </section>
             </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2f%25E7%2590%2586%25E8%25A7%25A3node-js%25E4%25B8%25AD%25E7%259A%2584stream%2f - %e7%90%86%e8%a7%a3nodeJs%e4%b8%ad%e7%9a%84stream by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
 
             
 
@@ -305,49 +264,49 @@ server.listen(1337);
 
             
                 <ul id="post-list" class="archive readmore">
-    <h3>Read more</h3>
+    <h3>true</h3>
 
     
     
     
         <li>
-            <a href="/blog/posts/%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BD%BF%E7%94%A8swagger%E7%BB%B4%E6%8A%A4node%E7%9A%84%E5%90%8E%E7%AB%AF%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/">koa-swagger-decorator:基于注解根据API自动生成可视化swagger文档<aside class="dates">Feb 10 2018</aside></a>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93%E5%92%8C%E6%9C%89%E7%94%A8%E7%9A%84%E6%96%87%E7%AB%A0/">一些总结和有用的文章<aside class="dates">Feb 1 2018</aside></a>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E5%92%8C%E5%AF%B9%E6%8A%97%E8%AE%AD%E7%BB%83%E7%AC%94%E8%AE%B0------%E7%AE%80%E8%BF%B0/">对抗样本和对抗训练笔记<aside class="dates">Jan 18 2018</aside></a>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/">解决卸载360，腾讯管家等安全软件导致windows-defender服务无法启动问题<aside class="dates">Sep 18 2017</aside></a>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E4%BD%BF%E7%94%A8vscode%E8%B0%83%E8%AF%95babel%E7%BC%96%E8%AF%91%E7%9A%84node-js%E9%A1%B9%E7%9B%AE/">使用VSCode调试babel编译的nodeJs项目<aside class="dates">Aug 16 2017</aside></a>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%90%8E%E3%81%AE%E5%BC%82%E4%B8%96%E7%95%8C-%E5%8A%A8%E7%94%BB%E8%84%9A%E6%9C%AC/">浏览器后の异世界-动画脚本<aside class="dates">May 21 2017</aside></a>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1ddd/">理解领域驱动设计（DDD）<aside class="dates">Aug 3 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E7%BB%9F%E8%AE%A1%E7%9B%B8%E5%85%B3%E6%80%A7%E7%9A%84kappa%E7%B3%BB%E6%95%B0/">理解统计相关性的kappa系数<aside class="dates">Apr 28 2017</aside></a>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/">Git工作流的最佳实践<aside class="dates">Apr 18 2017</aside></a>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%9F%BA%E4%BA%8Epromise%E5%92%8Casync-await%E7%9A%84%E5%BC%82%E6%AD%A5%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/">基于Promise和Async-Await的异步流程控制<aside class="dates">Apr 18 2017</aside></a>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
         </li>
     
         <li>
-            <a href="/blog/posts/%E5%A1%AB%E5%9D%91-%E5%89%8D%E7%AB%AF%E5%AF%BC%E5%87%BAcsv%E6%96%87%E4%BB%B6/">填坑-前端导出csv文件的方法<aside class="dates">Apr 18 2017</aside></a>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
         </li>
     
 </ul>
@@ -368,6 +327,10 @@ server.listen(1337);
         <i class="fa fa-github-square"></i>
     </a>
     
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
 
 
 </div>
@@ -375,7 +338,7 @@ server.listen(1337);
     
     <p class="small">
     
-       © Copyright 2018 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
     
     </p>
     <p class="small">
@@ -394,6 +357,17 @@ server.listen(1337);
 
 
 
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
 
     </body>

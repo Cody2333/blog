@@ -28,9 +28,9 @@ hasCJKLanguage = true
 
 
 	enableGoogleAnalytics = false
-	enableBaiduAnalytics = false
+	enableBaiduAnalytics = true
 	# Set the value to your baidu analysis code if you want to use baidu analytics
-	baiduAnalytics = '<script>
+	baiduAnalytics = '''<script>
 		var _hmt = _hmt || [];
 		(function() {
 			var hm = document.createElement("script");
@@ -39,7 +39,7 @@ hasCJKLanguage = true
 			s.parentNode.insertBefore(hm, s);
 		})();
 		</script>
-		'
+		'''
 
 	enableTwitterCard = true
 	# The url for twitter card image, default is avatar.png in static/images directory
@@ -63,10 +63,10 @@ hasCJKLanguage = true
 
 	# show latest posts in single page
 	showLatestPosts = true
-	readMore = ""
+	readMore = true
 
 	# Share
-	enableShare = false
+	enableShare = true
 	tweet = ""
 	share = ""
 
@@ -84,3 +84,4 @@ hasCJKLanguage = true
 [social]
 	facebook-square = "https://www.facebook.com/cody.wang.585"
 	github-square = "https://www.github.com/Cody2333"
+	home = "https://cody.wang"
