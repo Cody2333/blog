@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody2333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="理解领域驱动设计（DDD）"/>
+  <meta name="twitter:description" content="领域？ 每一个系统都会属于某个特定的领域，比如论坛是一个领域，用户发帖、回帖等都是它的基本功能。同一个领域的系统都具有相同的核心业务，因为他们"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.65.3" />
+		<title>理解领域驱动设计（DDD） &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody2333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody2333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody2333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody2333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        理解领域驱动设计（DDD）
+                    </h1>
+                    <h2 class="headline">
+                    Aug 3, 2019 00:00
+                    · 731 words
+                    · 2 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/tech">tech</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents"></nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h1 id="领域">领域？</h1>
+<p>每一个系统都会属于某个特定的领域，比如论坛是一个领域，用户发帖、回帖等都是它的基本功能。同一个领域的系统都具有相同的核心业务，因为他们要解决的问题的本质是类似的。因此，一个领域本质上可以理解为就是一个问题域。</p>
+<h1 id="领域驱动设计">领域驱动设计？</h1>
+<ul>
+<li>领域驱动领域模型的设计</li>
+<li>领域模型驱动代码的实现</li>
+</ul>
+<p>DDD 的核心是基于对领域的理解去设计系统与具体实现。我们只要保证领域模型的设计是正确的，就能确定领域模型可以解决领域中的核心问题，同理，我们只要保证代码实现是严格按照领域模型的意图来落地的，那就能保证最后出来的代码能够解决领域的核心问题的，这是与传统的开发模式的差异所在。根据业务领域来驱动软件设计，这是领域驱动设计的基本思想。</p>
+<h1 id="领域模型的具体落地实现">领域模型的具体落地实现</h1>
+<p>领域模型的设计最终会要落地到代码实现上，对于 node/egg 应用，可以在原有的 service 层的基础上进一步细分来实现领域驱动设计的模式。</p>
+<ul>
+<li>
+<p>business 层
+负责具体业务的组装，负责对领域对象的业务逻辑的组装以及权限校验，事务等操作。</p>
+</li>
+<li>
+<p>domain 层
+core model 负责领域中领域对象的定义。这里应该使用充血模型，将大部分的业务逻辑放在领域对象中，从而是的领域对象可以很好的解释业务。而上层的 business 层只负责对业务逻辑的组装以及权限校验等操作。当业务变更的时候，需要对应的更新领域对象。
+core repository 作为对象的仓储。 repository 的意义是将领域对象和数据持久化对象之间的关系进行抽象。对于复杂的业务，可能一次业务流程包含对于一个领域对象持久化，读取，再更新，再持久化的过程。持久化的操作本身是不属于领域的一部分的，所以对于这些逻辑都可以封装到仓储，避免污染领域模型。</p>
+</li>
+<li>
+<p>infrastructure 层
+基础设施层，包含通用的技术组件可供 domain层和 business层调用，同时包含对于外部依赖的服务的封装。如数据持久化DAL层，外部服务RPC调用，Redis缓存等。</p>
+</li>
+</ul>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2f%25E7%2590%2586%25E8%25A7%25A3%25E9%25A2%2586%25E5%259F%259F%25E9%25A9%25B1%25E5%258A%25A8%25E8%25AE%25BE%25E8%25AE%25A1ddd%2f - %e7%90%86%e8%a7%a3%e9%a2%86%e5%9f%9f%e9%a9%b1%e5%8a%a8%e8%ae%be%e8%ae%a1%ef%bc%88DDD%ef%bc%89 by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>true</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3-babel-%E5%8F%8A%E5%85%B6%E6%8F%92%E4%BB%B6%E6%9C%BA%E5%88%B6/">理解 Babel 及其插件机制<aside class="dates">Aug 3 2018</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody2333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody2333.github.io/blog/js/main.js"></script>
+<script src="https://Cody2333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>

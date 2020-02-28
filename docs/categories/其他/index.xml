@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>其他 on Coooody&#39;s</title>
+    <link>https://Cody2333.github.io/blog/categories/%E5%85%B6%E4%BB%96/</link>
+    <description>Recent content in 其他 on Coooody&#39;s</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 18 Sep 2017 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://Cody2333.github.io/blog/categories/%E5%85%B6%E4%BB%96/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>解决卸载360，腾讯管家等安全软件导致windows-defender服务无法启动问题</title>
+      <link>https://Cody2333.github.io/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Mon, 18 Sep 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://Cody2333.github.io/blog/posts/%E8%A7%A3%E5%86%B3%E5%8D%B8%E8%BD%BD360%E8%85%BE%E8%AE%AF%E7%AE%A1%E5%AE%B6%E7%AD%89%E5%AE%89%E5%85%A8%E8%BD%AF%E4%BB%B6%E5%AF%BC%E8%87%B4windows-defender%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E9%97%AE%E9%A2%98/</guid>
+      <description>简介 不小心被安装了腾讯管家，卸载之后windows defender无法打开。 如果尝试在服务中手动启动，会报577错误。 网上找了很多解决方案都</description>
+    </item>
+    
+  </channel>
+</rss>

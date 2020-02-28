@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		 
+			
+  
+    <meta name="twitter:card" content="summary"/>
+    
+      <meta name="twitter:image" content="https://Cody2333.github.io/blog/images/avatar.png" />
+    
+  
+  
+  <meta name="twitter:title" content="基于Promise和Async-Await的异步流程控制"/>
+  <meta name="twitter:description" content="简介 很久以前，在Promise出现之前，编写js的异步代码是一件十分蛋疼的事情，一旦异步流程一复杂，回调地狱就会等着你，所以基于node.j"/>
+  
+    <meta name="twitter:site" content="@your_twitter_id"/>
+  
+  
+  
+  
+    <meta name="twitter:creator" content="@coooody"/>
+  
+
+
+
+		
+		<meta name="author" content="coooody">
+		<meta name="description" content="科科">
+		<meta name="generator" content="Hugo 0.65.3" />
+		<title>基于Promise和Async-Await的异步流程控制 &middot; Coooody&#39;s</title>
+		<link rel="shortcut icon" href="https://Cody2333.github.io/blog/images/favicon.ico">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/style.css">
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/highlight.css">
+
+		
+		<link rel="stylesheet" href="https://Cody2333.github.io/blog/css/font-awesome.min.css">
+		
+
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://Cody2333.github.io/blog/'> <span class="arrow">←</span>Home</a>
+	
+	<a href='https://Cody2333.github.io/blog/posts'>Archive</a>
+	<a href='https://Cody2333.github.io/blog/tags'>Tags</a>
+	<a href='https://Cody2333.github.io/blog/about'>About</a>
+
+	
+
+	
+</nav>
+
+
+        <section id="wrapper" class="post">
+            <article>
+                <header>
+                    <h1>
+                        基于Promise和Async-Await的异步流程控制
+                    </h1>
+                    <h2 class="headline">
+                    Apr 18, 2017 00:00
+                    · 1328 words
+                    · 3 minute read
+                      <span class="tags">
+                      
+                      
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/javascript">javascript</a>
+                          
+                              <a href="https://Cody2333.github.io/blog/tags/nodejs">nodejs</a>
+                          
+                      
+                      
+                      </span>
+                    </h2>
+                </header>
+                
+                  
+                    <div id="toc">
+                      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#简介">简介</a></li>
+    <li><a href="#如何制作一个披萨">如何制作一个披萨？</a></li>
+    <li><a href="#第一版实现">第一版实现</a></li>
+    <li><a href="#第二版实现">第二版实现</a></li>
+    <li><a href="#第三版实现">第三版实现</a></li>
+    <li><a href="#第四版实现">第四版实现</a></li>
+    <li><a href="#第五版实现">第五版实现</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+                    </div>
+                  
+                
+                <section id="post-body">
+                    <h2 id="简介">简介</h2>
+<p>很久以前，在Promise出现之前，编写js的异步代码是一件十分蛋疼的事情，一旦异步流程一复杂，回调地狱就会等着你，所以基于node.js的服务端编码开发的体验非常差，项目的可维护性和可读性也非常差，这也是最初node.js最为人所诟病的地方。</p>
+<p>在现代的js项目中，回调函数已经基本被Promise取代，而async/await的出现更是解决的promise在使用中会产生大量的胶水代码，以及不同Promise之间共享数据困难的问题，这又大大提升的编写异步流程的开发体验，但是async/await本身是基于promise的，而在很多情况下，async/await并不能完全取代promise的位置，理解promise是编写高质量的异步代码的基础。下面我们就来探讨一下在js中的异步流程控制的问题。如何在异步代码中保证异步流程的执行效率以及可读性和可维护性。以下为一个例子：</p>
+<h2 id="如何制作一个披萨">如何制作一个披萨？</h2>
+<ol>
+<li>
+<p>制作饼皮（dough）</p>
+</li>
+<li>
+<p>制作酱汁（sauce）</p>
+</li>
+<li>
+<p>品尝一下酱汁，根据酱汁的口味决定放哪种芝士（cheese）</p>
+</li>
+</ol>
+<h2 id="第一版实现">第一版实现</h2>
+<pre><code>async function makePizza(sauceType = 'red') {
+  
+  let dough  = await makeDough();
+  let sauce  = await makeSauce(sauceType);
+  let cheese = await grateCheese(sauce.determineCheese());
+  
+  dough.add(sauce);
+  dough.add(cheese);
+  
+  return dough;
+
+}
+</code></pre><p>基于async/await，看起来逻辑很清晰，但是它最大的问题是这不是一个最优的异步流程控制。</p>
+<h2 id="第二版实现">第二版实现</h2>
+<pre><code>// 原来的流程
+|-------- dough --------&gt; |-------- sauce --------&gt; |-- cheese --&gt;
+
+// 改进的流程
+|-------- dough --------&gt;
+|-------- sauce --------&gt; |-- cheese --&gt;
+
+async function makePizza(sauceType = 'red') {
+  
+  let [ dough, sauce ] =
+    await Promise.all([ makeDough(), makeSauce(sauceType) ]);
+  let cheese = await grateCheese(sauce.determineCheese());
+  
+  dough.add(sauce);
+  dough.add(cheese);
+  
+  return dough;
+}
+</code></pre><p>效率比第一版就高了很多。使用promise.all并行执行异步任务，流程也比较清晰。</p>
+<h2 id="第三版实现">第三版实现</h2>
+<p>由于制作dough的时间是比较长的，我们的流程其实还有改进的空间，如下。</p>
+<pre><code>// 上一步改进的流程
+|-------- dough --------&gt;
+|--- sauce ---&gt;           |-- cheese --&gt;
+
+// 进一步改进的流程
+|--------- dough ---------&gt;
+|---- sauce ----&gt; |-- cheese --&gt;
+
+function makePizza(sauceType = 'red') {
+  let doughPromise  = makeDough();
+  let saucePromise  = makeSauce(sauceType);
+  let cheesePromise = saucePromise.then(sauce =&gt; {
+    return grateCheese(sauce.determineCheese());
+  });
+  
+  return Promise.all([ doughPromise, saucePromise, cheesePromise ])
+    .then(([ dough, sauce, cheese ]) =&gt; {
+      
+      dough.add(sauce);
+      dough.add(cheese);
+      
+      return dough;
+    });
+}
+</code></pre><p>现在的异步流程应该是最优的了，但是问题来了，这样的流程用async/await表示的话就有点麻烦了，我们这里先用promise实现了这个最优流程，可以看到promise的弊端很明显，充满了胶水代码，我们再也不能像我们的第一版实现一样，一眼就能看出我们这个函数的异步流程是怎么样的了，可读性下降了。</p>
+<h2 id="第四版实现">第四版实现</h2>
+<pre><code>// 最优流程
+|--------- dough ---------&gt;
+|---- sauce ----&gt; |-- cheese --&gt;
+
+async function makePizza(sauceType = 'red') {
+  
+  let doughPromise = makeDough();
+  let saucePromise = makeSauce(sauceType);
+  
+  let sauce  = await saucePromise;
+  let cheese = await grateCheese(sauce.determineCheese());
+  let dough  = await doughPromise;
+  
+  dough.add(sauce);
+  dough.add(cheese);
+  
+  return dough;
+}
+</code></pre><p>这一版实现，代码看起来整洁了很多，但是它的异步流程更加不清晰了，通过提前创建promise然后在之后再进行await，我们得到了整洁的代码，但是却使得流程更加不清晰，隐式的执行promise然后await，让await的语义变得很不明了。</p>
+<h2 id="第五版实现">第五版实现</h2>
+<pre><code>async function makePizza(sauceType = 'red') {
+  
+  let prepareDough  = memoize(async () =&gt; makeDough());
+  let prepareSauce  = memoize(async () =&gt; makeSauce(sauceType));
+  let prepareCheese = memoize(async () =&gt; {
+    return grateCheese((await prepareSauce()).determineCheese());
+  });
+  
+  let [ dough, sauce, cheese ] = 
+    await Promise.all([
+      prepareDough(), prepareSauce(), prepareCheese()
+    ]);
+    
+  dough.add(sauce);
+  dough.add(cheese);
+  
+  return dough;
+}
+</code></pre><p>这个版本相比于上一个版本的区别主要是现在我们不再提前创建promise，而保存为一个生成函数，并且使用memoize缓存结果，从而使得promise只需要resolve一次就可以缓存结果。这样子的异步流程相比于上一个版本就清楚了很多，而代码依然可以保持很好的可读性。</p>
+<h2 id="总结">总结</h2>
+<p>感觉Promise.all和await/async的结合依然不是很优雅，总感觉有点难受，在未来，js的异步流程控制肯定还会有更优雅的解决方案。</p>
+
+                </section>
+            </article>
+
+            
+                <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fCody2333.github.io%2fblog%2fposts%2f%25E5%259F%25BA%25E4%25BA%258Epromise%25E5%2592%258Casync-await%25E7%259A%2584%25E5%25BC%2582%25E6%25AD%25A5%25E6%25B5%2581%25E7%25A8%258B%25E6%258E%25A7%25E5%2588%25B6%2f - %e5%9f%ba%e4%ba%8ePromise%e5%92%8cAsync-Await%e7%9a%84%e5%bc%82%e6%ad%a5%e6%b5%81%e7%a8%8b%e6%8e%a7%e5%88%b6 by @your_twitter_id"><span class="icon-twitter"> tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+            
+
+            
+
+            
+                <ul id="post-list" class="archive readmore">
+    <h3>true</h3>
+
+    
+    
+    
+        <li>
+            <a href="/blog/posts/%E8%AE%B0%E4%BB%8E0%E5%88%B0%E4%B8%80%E5%91%A8%E5%86%85%E5%BF%AB%E9%80%9F%E4%B8%8A%E7%BA%BF%E7%9A%84%E9%A1%B9%E7%9B%AE/">记从0到一周内快速上线的项目<aside class="dates">Feb 3 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%93%88%E6%9B%BC%E5%8D%A1%E9%A1%BF-allure-%E7%90%A5%E7%8F%80-%E6%B5%B7%E5%A4%96%E7%89%88%E5%BC%80%E7%AE%B1%E9%99%84-alexa-%E8%AF%AD%E9%9F%B3%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">哈曼卡顿 Allure-琥珀 海外版开箱（附 Alexa 语音配置教程）<aside class="dates">Jan 24 2020</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2019-google-%E5%BC%80%E5%8F%91%E8%80%85%E5%A4%A7%E4%BC%9Agdd%E8%A7%81%E9%97%BB/">2019 Google 开发者大会(GDD)见闻<aside class="dates">Dec 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/node-js-%E4%B8%AD%E7%9A%84%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98/">Node.js 中的并发安全问题<aside class="dates">Aug 18 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%8C%87%E5%8C%97/">快速入门前端开发指北<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%90%86%E8%A7%A3%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1ddd/">理解领域驱动设计（DDD）<aside class="dates">Aug 3 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E5%A1%AB%E5%9D%91babel-%E5%92%8C-ts-%E5%AF%B9-es-module-%E5%92%8C-commonjs-%E7%9A%84%E5%A4%84%E7%90%86/">【填坑】babel-和-ts-对-ES-Module-和-CommonJS-的处理<aside class="dates">May 12 2019</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018%E5%8D%8E%E4%B8%BA%E6%9D%AF%E5%85%A8%E5%9B%BD%E7%A0%94%E7%A9%B6%E7%94%9F%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1%E6%AF%94%E8%B5%9B-%E5%8F%82%E8%B5%9B%E5%B0%8F%E7%BB%93/">2018“华为杯”全国研究生数学建模比赛-参赛小结<aside class="dates">Dec 12 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/%E7%8E%B0%E8%BA%AB%E8%AF%B4%E6%B3%95%E9%9C%87%E6%83%8A%E4%B8%A2%E5%A4%B1%E8%BA%AB%E4%BB%BD%E8%AF%81%E7%AB%9F%E8%A2%AB%E5%86%92%E7%94%A8%E8%B4%B7%E6%AC%BE/">现身说法【震惊】丢失身份证竟被冒用贷款！<aside class="dates">Dec 3 2018</aside></a>
+        </li>
+    
+        <li>
+            <a href="/blog/posts/2018-%E4%B8%8A%E6%B5%B7%E4%BA%A4%E5%A4%A7hackthon-hackxsjtu-%E5%8F%82%E8%B5%9B%E5%B0%8F%E8%AE%B0/">2018-上海交大hackthon-HACKxSJTU-参赛小记<aside class="dates">Nov 12 2018</aside></a>
+        </li>
+    
+</ul>
+
+            
+
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    <a class="symbol" href="https://www.facebook.com/cody.wang.585">
+        <i class="fa fa-facebook-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://www.github.com/Cody2333">
+        <i class="fa fa-github-square"></i>
+    </a>
+    
+    <a class="symbol" href="https://cody.wang">
+        <i class="fa fa-home"></i>
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+       © Copyright 2020 <i class="fa fa-heart" aria-hidden="true"></i> coooody
+    
+    </p>
+    <p class="small">
+        Powered by <a href="http://www.gohugo.io/">Hugo</a> Theme By <a href="https://github.com/nodejh/hugo-theme-cactus-plus">nodejh</a>
+    </p>
+</footer>
+
+        </section>
+
+        <script src="https://Cody2333.github.io/blog/js/jquery-3.3.1.min.js"></script>
+<script src="https://Cody2333.github.io/blog/js/main.js"></script>
+<script src="https://Cody2333.github.io/blog/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+<script>
+var baiduAnalytics = '\x3cscript\x3e\n\t\tvar _hmt = _hmt || [];\n\t\t(function() {\n\t\t\tvar hm = document.createElement(\x22script\x22);\n\t\t\thm.src = \x22https:\/\/hm.baidu.com\/hm.js?27f84b75a4ae3ba1b7b21d996fdf549c\x22;\n\t\t\tvar s = document.getElementsByTagName(\x22script\x22)[0]; \n\t\t\ts.parentNode.insertBefore(hm, s);\n\t\t})();\n\t\t\x3c\/script\x3e\n\t\t';
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?" + baiduAnalytics;
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+    </body>
+</html>
